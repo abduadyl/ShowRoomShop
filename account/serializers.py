@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from account.utils import send_activation_mail
+from myprofile.models import Profile
 
 MyUser = get_user_model()
 
@@ -10,7 +11,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = ('email', 'username', 'password', 'password_confirm')
+        fields = ('email', 'username', 'password', 'password_confirm', 'status')
 
     def validate_email(self, email):
         if MyUser.objects.filter(email=email).exists():
@@ -32,4 +33,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = MyUser.objects.create_user(**validated_data)
         send_activation_mail(user)
+        if user.status == 'designer':
+            Profile.objects.create(user=user, email=user.email)
         return user
+
