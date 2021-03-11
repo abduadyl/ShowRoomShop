@@ -29,6 +29,7 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
 STATUS_CHOICES = (
     ('designer', 'designer'),
     ('customer', 'customer')

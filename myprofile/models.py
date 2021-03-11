@@ -1,8 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.template.defaultfilters import slugify
-from myprofile.utils import get_random_code
-
 
 MyUser = get_user_model()
 
