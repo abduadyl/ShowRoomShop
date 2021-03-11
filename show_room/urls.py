@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/docs/', schema_view.with_ui()),
     path('api/v1/account/', include('account.urls')),
+    path('api/v1/profile/', include('myprofile.urls')),
 ]
 

@@ -47,7 +47,7 @@ class MyUser(AbstractUser):
     objects = MyUserManager()
 
     def __str__(self):
-        return f'{self.email} {self.username}'
+        return f'{self.email}'
 
     def create_activation_code(self):
         code = get_random_string(length=6, allowed_chars='1234567890')
