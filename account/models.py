@@ -26,19 +26,25 @@ class MyUserManager(BaseUserManager):
         user.is_superuser = True
         user.is_active = True
         user.is_staff = True
+        user.status_admin = 'admin'
         user.save(using=self._db)
         return user
 
 
 STATUS_CHOICES = (
     ('designer', 'designer'),
-    ('customer', 'customer')
+    ('customer', 'customer'),
+)
+
+STATUS_CHOICE_ADMIN = (
+    ('admin', 'admin'),
 )
 
 class MyUser(AbstractUser):
     email = models.EmailField(max_length=150, unique=True)
     username = models.CharField(max_length=155, unique=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status_admin = models.CharField(max_length=20, choices=STATUS_CHOICE_ADMIN)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=6, blank=True)
 
