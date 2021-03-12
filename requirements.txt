@@ -5,3 +5,5 @@ djangorestframework==3.11
 djangorestframework-simplejwt
 python-decouple==3.4
 drf-yasg
+celery
+redis

@@ -3,7 +3,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer, CreateNewPasswordSerializer
-from .utils import send_activation_mail
+from .tasks import send_activation_mail
 
 MyUser = get_user_model()
 
@@ -34,7 +34,7 @@ class ForgotPassword(APIView):
         user.is_active = False
         user.create_activation_code()
         user.save()
-        send_activation_mail(user)
+        send_activation_mail.delay(user.email, user.activation_code)
         return Response('Вам отправлено письмо', status=200)
 
 class ForgotPasswordComplete(APIView):
