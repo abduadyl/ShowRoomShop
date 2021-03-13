@@ -14,4 +14,4 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Category)
 admin.site.register(Review)
-
+admin.site.register(Like)

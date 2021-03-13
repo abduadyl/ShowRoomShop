@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from account.tasks import send_activation_mail
-from myprofile.models import Profile
+from myprofile.models import ProfileDesigner, ProfileCustomer
 
 MyUser = get_user_model()
 
@@ -34,7 +34,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = MyUser.objects.create_user(**validated_data)
         send_activation_mail.delay(user.email, user.activation_code)
         if user.status == 'designer':
-            Profile.objects.create(user=user, email=user.email)
+            ProfileDesigner.objects.create(user=user, email=user.email)
+        else:
+            ProfileCustomer.objects.create(user=user, email=user.email)
         return user
 
 

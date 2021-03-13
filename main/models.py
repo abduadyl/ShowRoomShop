@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from myprofile.models import Profile
+from myprofile.models import ProfileDesigner, ProfileCustomer
 
 MyUser = get_user_model()
 
@@ -12,7 +12,7 @@ class Category(models.Model):
         return self.title
 
 class Product(models.Model):
-    author = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='products')
+    author = models.ForeignKey(ProfileDesigner, on_delete=models.CASCADE, related_name='products')
     title = models.CharField(max_length=100)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
@@ -26,13 +26,14 @@ class Product(models.Model):
     class Meta:
         ordering = ('-created', )
 
+
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='product/')
 
 
 class Review(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(ProfileCustomer, on_delete=models.CASCADE, related_name='reviews')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
@@ -45,7 +46,8 @@ class Review(models.Model):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(ProfileCustomer, on_delete=models.CASCADE, related_name='likes')
     post = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes')
-    like = models.BooleanField()
+    like = models.BooleanField(default=False)
+
 

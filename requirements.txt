@@ -7,3 +7,5 @@ python-decouple==3.4
 drf-yasg
 celery
 redis
+django-phonenumber-field==5.0.0
+phonenumbers==8.12.19

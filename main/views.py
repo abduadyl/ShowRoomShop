@@ -1,6 +1,5 @@
 from rest_framework import generics, viewsets, status
 from rest_framework.pagination import PageNumberPagination
-
 from .models import Category, Product, Review
 from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer
 from rest_framework.response import Response
@@ -35,14 +34,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ReviewListView(generics.ListAPIView):
+class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
-
-class ReviewCreateView(generics.CreateAPIView):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
 
 
 

@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from main.views import ProductViewSet
+from main.views import ProductViewSet, ReviewViewSet
 
 
 schema_view = get_schema_view(
@@ -24,6 +24,7 @@ schema_view = get_schema_view(
 
 router = DefaultRouter()
 router.register('posts', ProductViewSet)
+router.register('review', ReviewViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

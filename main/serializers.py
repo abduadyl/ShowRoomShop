@@ -7,6 +7,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Product
         fields = '__all__'
@@ -15,6 +16,8 @@ class ProductSerializer(serializers.ModelSerializer):
         representation = super(ProductSerializer, self).to_representation(instance)
         representation['images'] = ProductImageSerializer(instance.images.all(), many=True, context=self.context).data
         representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
+        representation['likes'] = LikeSerializer(instance.likes.all(), many=True).data
+        print(instance.likes.all().count())
         return representation
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -42,4 +45,10 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ('user', 'like', )
+
 
