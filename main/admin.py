@@ -13,3 +13,5 @@ class PostAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Category)
+admin.site.register(Review)
+

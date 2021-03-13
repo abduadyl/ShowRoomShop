@@ -1,5 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from myprofile.models import Profile
+
+MyUser = get_user_model()
 
 class Category(models.Model):
     slug = models.SlugField(max_length=100, primary_key=True)
@@ -28,4 +31,21 @@ class ProductImage(models.Model):
     image = models.ImageField(upload_to='product/')
 
 
+class Review(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='reviews')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user}-{self.product}'
+
+    class Meta:
+        ordering = ('-created', )
+
+
+class Like(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='likes')
+    post = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes')
+    like = models.BooleanField()
 

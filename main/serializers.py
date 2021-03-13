@@ -14,6 +14,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super(ProductSerializer, self).to_representation(instance)
         representation['images'] = ProductImageSerializer(instance.images.all(), many=True, context=self.context).data
+        representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
         return representation
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -35,4 +36,10 @@ class ProductImageSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['image'] = self._get_image_url(instance)
         return representation
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
 
