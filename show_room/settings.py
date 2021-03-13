@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     'account',
     'myprofile',
     'main',
+    'order',
+    'cart',
 ]
 
 MIDDLEWARE = [
