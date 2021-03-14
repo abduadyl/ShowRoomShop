@@ -7,7 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from main.views import ProductViewSet, ReviewViewSet
-
+from cart.views import CartViewSet
 
 schema_view = get_schema_view(
     openapi.Info(

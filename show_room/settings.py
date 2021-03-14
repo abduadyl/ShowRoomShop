@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 from decouple import config
@@ -126,3 +125,5 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
+
+
