@@ -1,9 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from main.models import Product
-
-
-MyUser = get_user_model()
+from myprofile.models import ProfileCustomer
 
 
 class CartManger(models.Manager):
@@ -25,7 +23,7 @@ class CartManger(models.Manager):
 
 
 class Cart(models.Model):
-    user = models.OneToOneField(MyUser, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(ProfileCustomer, on_delete=models.CASCADE, null=True, blank=True)
 
     objects = CartManger()
 
