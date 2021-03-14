@@ -6,10 +6,15 @@ from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Q
-from .permissions import IsAuthorPermission, IsDesignerPermission
+from .permissions import IsAuthorPermission, IsDesignerPermission, IsCustomerPermission
 
-class Pagination(PageNumberPagination):
-    page_size = 3
+
+class PaginationProduct(PageNumberPagination):
+    page_size = 5
+
+class PaginationReview(PageNumberPagination):
+    page_size = 10
+
 
 class PermissionMixinProduct:
     def get_permissions(self):
@@ -29,7 +34,7 @@ class PermissionMixinProduct:
 class PermissionMixinReview:
     def get_permissions(self):
         if self.action == 'create':
-            permissions = [IsAuthenticated, ]
+            permissions = [IsCustomerPermission, ]
         elif self.action in ['update', 'partial_update', 'destroy']:
             permissions = [IsAuthorPermission, ]
         elif self.action == 'list':
@@ -37,6 +42,7 @@ class PermissionMixinReview:
         else:
             permissions = []
         return [perm() for perm in permissions]
+
 
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -47,7 +53,7 @@ class CategoryListView(generics.ListAPIView):
 class ProductViewSet(PermissionMixinProduct, viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    pagination_class = Pagination
+    pagination_class = PaginationProduct
 
     @action(detail=True, methods=['post'])
     def like(self):
@@ -65,6 +71,7 @@ class ProductViewSet(PermissionMixinProduct, viewsets.ModelViewSet):
 class ReviewViewSet(PermissionMixinReview, viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    pagination_class = PaginationReview
 
 
 
