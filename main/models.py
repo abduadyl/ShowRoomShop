@@ -11,6 +11,7 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
+
 STOCK_CHOICES = (
     ('in stock', 'in stock'),
     ('out of stock', 'out of stock')

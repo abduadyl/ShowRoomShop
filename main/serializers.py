@@ -10,20 +10,26 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ('id', 'title', 'description', 'price', 'stock', 'category')
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        user = request.user.profile_designer
+        product = Product.objects.create(author=user, **validated_data)
+        return product
 
     def to_representation(self, instance):
         representation = super(ProductSerializer, self).to_representation(instance)
+        representation['author'] = instance.author.email
         representation['images'] = ProductImageSerializer(instance.images.all(), many=True, context=self.context).data
         representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
         representation['likes'] = LikeSerializer(instance.likes.all(), many=True).data
-        print(instance.likes.all().count())
         return representation
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = '__all__'
+        fields = ('image', )
 
     def _get_image_url(self, obj):
         if obj.image:
@@ -44,7 +50,14 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = ('product', 'text', )
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        user = request.user.profile_customer
+        review = Review.objects.create(user=user, **validated_data)
+        return review
+
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

@@ -26,6 +26,7 @@ class CartManger(models.Manager):
 
 class Cart(models.Model):
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, null=True, blank=True)
+
     objects = CartManger()
 
 

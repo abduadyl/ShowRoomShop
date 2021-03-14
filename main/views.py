@@ -1,22 +1,50 @@
 from rest_framework import generics, viewsets, status
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Category, Product, Review
 from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Q
-
+from .permissions import IsAuthorPermission, IsDesignerPermission
 
 class Pagination(PageNumberPagination):
     page_size = 3
 
+class PermissionMixinProduct:
+    def get_permissions(self):
+        if self.action == 'create':
+            permissions = [IsDesignerPermission, ]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            permissions = [IsAuthorPermission, ]
+        elif self.action == 'list':
+            permissions = [AllowAny, ]
+        else:
+            permissions = []
+        return [perm() for perm in permissions]
+
+    def get_serializer_context(self):
+        return {'request': self.request, 'action': self.action}
+
+class PermissionMixinReview:
+    def get_permissions(self):
+        if self.action == 'create':
+            permissions = [IsAuthenticated, ]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            permissions = [IsAuthorPermission, ]
+        elif self.action == 'list':
+            permissions = [AllowAny, ]
+        else:
+            permissions = []
+        return [perm() for perm in permissions]
 
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [AllowAny, ]
 
 
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(PermissionMixinProduct, viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     pagination_class = Pagination
@@ -34,7 +62,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(PermissionMixinReview, viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
