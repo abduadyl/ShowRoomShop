@@ -8,9 +8,18 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='cartitem')
     amount = models.PositiveIntegerField(default=1)
 
+    def __str__(self):
+        return self.product.title
+
+    def get_total_price(self):
+        return self.product.price * self.amount
+
+
 class Cart(models.Model):
-    products = models.ManyToManyField(CartItem)
+    products = models.ManyToManyField(CartItem, related_name='cart')
     user = models.OneToOneField(ProfileCustomer, on_delete=models.CASCADE, related_name='cart')
 
+    def __str__(self):
+        return self.user.email
 
 

@@ -7,7 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from main.views import ProductViewSet, ReviewViewSet
-from cart.views import CartViewSet
+from cart.views import CartViewSet, CartItemViewSet
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -25,6 +25,8 @@ schema_view = get_schema_view(
 router = DefaultRouter()
 router.register('posts', ProductViewSet)
 router.register('review', ReviewViewSet)
+router.register('cart', CartViewSet)
+router.register('cartitem', CartItemViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

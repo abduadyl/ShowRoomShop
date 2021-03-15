@@ -35,7 +35,6 @@ STATUS_CHOICES = (
     ('customer', 'customer'),
 )
 
-
 class MyUser(AbstractUser):
     email = models.EmailField(max_length=150, unique=True)
     username = models.CharField(max_length=155, unique=True)
