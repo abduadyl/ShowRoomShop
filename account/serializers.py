@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from account.tasks import send_activation_mail
 from myprofile.models import ProfileDesigner, ProfileCustomer
+from cart.models import Cart
 
 MyUser = get_user_model()
 
@@ -37,6 +38,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             ProfileDesigner.objects.create(user=user, email=user.email)
         else:
             ProfileCustomer.objects.create(user=user, email=user.email)
+            Cart.objects.create(user=user)
         return user
 
 

@@ -16,7 +16,7 @@ class CartItem(models.Model):
 
 
 class Cart(models.Model):
-    products = models.ManyToManyField(CartItem, related_name='cart')
+    products = models.ManyToManyField(CartItem, related_name='cart', blank=True)
     user = models.OneToOneField(ProfileCustomer, on_delete=models.CASCADE, related_name='cart')
 
     def __str__(self):

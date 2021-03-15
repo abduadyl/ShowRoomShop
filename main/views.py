@@ -1,7 +1,7 @@
 from rest_framework import generics, viewsets, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
-from .models import Category, Product, Review
+from .models import Category, Product, Review, Like
 from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -55,8 +55,14 @@ class ProductViewSet(PermissionMixinProduct, viewsets.ModelViewSet):
     pagination_class = PaginationProduct
 
     @action(detail=True, methods=['post'])
-    def like(self):
-        pass
+    def like(self, request, pk=None):
+        post = self.get_object()
+        obj, created = Like.objects.get_or_create(user=request.user.profile_customer, post=post)
+        if not created:
+            obj.like = not obj.like
+            obj.save()
+        liked_or_unliked = 'liked' if obj.like else 'unliked'
+        return Response('Successfully {} post'.format(liked_or_unliked), status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['get'])
     def search(self, request, pk=None):
@@ -71,6 +77,7 @@ class ReviewViewSet(PermissionMixinReview, viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     pagination_class = PaginationReview
+
 
 
 

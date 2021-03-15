@@ -7,7 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from main.views import ProductViewSet, ReviewViewSet
-from cart.views import CartViewSet, CartItemViewSet
+from cart.views import CartItemViewSet
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -23,9 +23,8 @@ schema_view = get_schema_view(
 )
 
 router = DefaultRouter()
-router.register('posts', ProductViewSet)
+router.register('products', ProductViewSet)
 router.register('review', ReviewViewSet)
-router.register('cart', CartViewSet)
 router.register('cartitem', CartItemViewSet)
 
 urlpatterns = [
@@ -33,7 +32,8 @@ urlpatterns = [
     path('api/v1/docs/', schema_view.with_ui()),
     path('api/v1/account/', include('account.urls')),
     path('api/v1/profile/', include('myprofile.urls')),
-    path('api/v1/posts/', include('main.urls')),
+    path('api/v1/products/', include('main.urls')),
+    path('api/v1/cart/', include('cart.urls')),
     path('api/v1/', include(router.urls)),
 ]
 
