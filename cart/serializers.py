@@ -1,5 +1,7 @@
+from django.db.models import Sum
 from rest_framework import serializers
 from .models import Cart, CartItem
+from main.models import Product
 
 class CartItemSerializer(serializers.ModelSerializer):
     product = serializers.ReadOnlyField(source='product.title')

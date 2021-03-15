@@ -22,10 +22,8 @@ class PermissionMixinProduct:
             permissions = [IsDesignerPermission, ]
         elif self.action in ['update', 'partial_update', 'destroy']:
             permissions = [IsAuthorPermission, ]
-        elif self.action == 'list':
-            permissions = [AllowAny, ]
         else:
-            permissions = []
+            permissions = [AllowAny, ]
         return [perm() for perm in permissions]
 
     def get_serializer_context(self):
@@ -37,11 +35,12 @@ class PermissionMixinReview:
             permissions = [IsCustomerPermission, ]
         elif self.action in ['update', 'partial_update', 'destroy']:
             permissions = [IsAuthorPermission, ]
-        elif self.action == 'list':
-            permissions = [AllowAny, ]
         else:
-            permissions = []
+            permissions = [AllowAny, ]
         return [perm() for perm in permissions]
+
+    def get_serializer_context(self):
+        return {'request': self.request, 'action': self.action}
 
 
 class CategoryListView(generics.ListAPIView):
