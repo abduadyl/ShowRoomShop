@@ -1,5 +1,7 @@
 from django.contrib import admin
+from modeltranslation.admin import TranslationAdmin
 from .models import *
+
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
@@ -8,7 +10,7 @@ class ProductImageInline(admin.TabularInline):
 
 
 @admin.register(Product)
-class PostAdmin(admin.ModelAdmin):
+class ProductAdmin(TranslationAdmin):
     inlines = [ProductImageInline, ]
 
 

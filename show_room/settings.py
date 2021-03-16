@@ -11,6 +11,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -19,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'phonenumber_field',
     'drf_yasg',
 
     # my apps
@@ -95,9 +97,37 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'account.MyUser'
 
-LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+
+LANGUAGE_CODE = 'ru'
+
+gettext = lambda s: s
+
+EXTRA_LANG_INFO = {
+    'ky': {
+        'bidi': False, # right-to-left
+        'code': 'ky',
+        'name': 'Kyrgyz',
+        'name_local': 'Кыргыз тили', #unicode codepoints here
+    },
+}
+
+# Add custom languages not provided by Django
+import django.conf.locale
+LANG_INFO = dict(django.conf.locale.LANG_INFO, **EXTRA_LANG_INFO)
+django.conf.locale.LANG_INFO = LANG_INFO
+
+LANGUAGES = (
+    ('en', gettext('English')),
+    ('ru', gettext('Russian')),
+    ('ky', gettext('Kyrgyz'))
+)
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
+
+TIME_ZONE = 'Asia/Bishkek'
+
+
 
 USE_I18N = True
 
@@ -125,5 +155,4 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 CELERY_BROKER_URL = 'redis://localhost:6380'
-
 
