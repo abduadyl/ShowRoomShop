@@ -65,7 +65,7 @@ class CreateNewPasswordSerializer(serializers.Serializer):
         return attrs
 
     def save(self, **kwargs):
-        data = self.validated_data()
+        data = self.validated_data
         email = data.get('email')
         code = data.get('activation_code')
         password = data.get('password')
