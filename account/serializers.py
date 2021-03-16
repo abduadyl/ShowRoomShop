@@ -38,7 +38,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             ProfileDesigner.objects.create(user=user, email=user.email)
         else:
             ProfileCustomer.objects.create(user=user, email=user.email)
-            Cart.objects.create(user=user)
         return user
 
 

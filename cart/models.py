@@ -3,8 +3,11 @@ from myprofile.models import ProfileCustomer
 from main.models import Product
 
 
+class Cart(models.Model):
+    user = models.ForeignKey(ProfileCustomer, on_delete=models.CASCADE, related_name='cart')
+
 class CartItem(models.Model):
-    user = models.ForeignKey(ProfileCustomer, on_delete=models.CASCADE, related_name='cartitem')
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cartitem')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='cartitem')
     amount = models.PositiveIntegerField(default=1)
 
@@ -15,11 +18,6 @@ class CartItem(models.Model):
         return self.product.price * self.amount
 
 
-class Cart(models.Model):
-    products = models.ManyToManyField(CartItem, related_name='cart', blank=True)
-    user = models.OneToOneField(ProfileCustomer, on_delete=models.CASCADE, related_name='cart')
 
-    def __str__(self):
-        return self.user.email
 
 
