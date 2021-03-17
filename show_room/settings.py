@@ -11,6 +11,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    # мультиязычность
     'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,6 +23,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'phonenumber_field',
     'drf_yasg',
+    'django_filters',
 
     # my apps
     'account',
@@ -92,7 +94,8 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 AUTH_USER_MODEL = 'account.MyUser'

@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 from django.db.models import Q
 from .permissions import IsAuthorProductPermission, IsDesignerPermission, IsCustomerPermission, IsAuthorReviewPermission
 from .utils import main
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class PaginationProduct(PageNumberPagination):
@@ -59,6 +60,8 @@ class ProductViewSet(PermissionMixinProduct, viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     pagination_class = PaginationProduct
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['category', ]
 
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
