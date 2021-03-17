@@ -47,7 +47,18 @@ class Command(BaseCommand):
         def get_info(c):
             chat_id = c.message.chat.id
 
-            if c.data:
-                bot.send_message(chat_id, info(c.data))
+            def keyboard():
+                inline_keyboard = types.InlineKeyboardMarkup()
+                k1 = types.InlineKeyboardButton('Назад к списку', callback_data='back list')
+                k2 = types.InlineKeyboardButton('Выход', callback_data='exit')
+                inline_keyboard.add(k1, k2)
+                return inline_keyboard
+
+            if c.data == 'back list':
+                bot.edit_message_text('Вы обратно вернулись в список:', chat_id, c.message.message_id, reply_markup=inlinekeyboard())
+            elif c.data == 'exit':
+                bot.edit_message_text('Досвидания', chat_id, c.message.message_id, reply_markup=None)
+            else:
+                bot.edit_message_text(info(c.data), chat_id, c.message.message_id, reply_markup=keyboard())
 
         bot.polling()
