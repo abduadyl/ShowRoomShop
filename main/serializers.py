@@ -55,7 +55,7 @@ class ProductSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         for k, v in validated_data.items():
             setattr(instance, k, v)
-        instance.images.delete()
+        instance.images.all().delete()
         images_data = request.FILES
         for image in images_data.getlist('images'):
             ProductImage.objects.create(product=instance, image=image)
@@ -73,7 +73,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ('product', 'text', )
+        fields = ('id', 'product', 'text', )
 
     def create(self, validated_data):
         request = self.context.get('request')

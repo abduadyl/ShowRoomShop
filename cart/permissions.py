@@ -1,5 +1,4 @@
 from rest_framework.permissions import BasePermission
-from myprofile.models import ProfileDesigner, ProfileCustomer
 
 class IsAuthorPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -7,8 +6,16 @@ class IsAuthorPermission(BasePermission):
 
 class IsDesignerPermission(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user.is_authenticated and isinstance(request.user.profile_designer, ProfileDesigner))
+        try:
+            if request.user.profile_designer:
+                return bool(request.user.is_authenticated)
+        except:
+            return False
 
 class IsCustomerPermission(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user.is_authenticated and isinstance(request.user.profile_customer, ProfileCustomer))
+        try:
+            if request.user.profile_customer:
+                return bool(request.user.is_authenticated)
+        except:
+            return False

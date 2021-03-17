@@ -7,7 +7,7 @@ from .serializers import CategoryListSerializer, ProductSerializer, ReviewSerial
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Q
-from .permissions import IsAuthorPermission, IsDesignerPermission, IsCustomerPermission
+from .permissions import IsAuthorProductPermission, IsDesignerPermission, IsCustomerPermission, IsAuthorReviewPermission
 from .utils import main
 
 
@@ -22,8 +22,8 @@ class PermissionMixinProduct:
     def get_permissions(self):
         if self.action == 'create':
             permissions = [IsDesignerPermission, ]
-        elif self.action in ['update', 'partial_update', 'destroy']:
-            permissions = [IsAuthorPermission, ]
+        elif self.action in ['update', 'partial_update', 'delete']:
+            permissions = [IsAuthorProductPermission, ]
         else:
             permissions = [AllowAny, ]
         return [perm() for perm in permissions]
@@ -35,8 +35,8 @@ class PermissionMixinReview:
     def get_permissions(self):
         if self.action == 'create':
             permissions = [IsCustomerPermission, ]
-        elif self.action in ['update', 'partial_update', 'destroy']:
-            permissions = [IsAuthorPermission, ]
+        elif self.action in ['update', 'partial_update', 'delete']:
+            permissions = [IsAuthorReviewPermission, ]
         else:
             permissions = [AllowAny, ]
         return [perm() for perm in permissions]
