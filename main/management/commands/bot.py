@@ -20,7 +20,8 @@ class Command(BaseCommand):
         def inlinekeyboard():
             inline_keyboard_title = types.InlineKeyboardMarkup()
             for product in products:
-                button = types.InlineKeyboardButton(product.title, callback_data='test')
+                index = product.id
+                button = types.InlineKeyboardButton(product.title, callback_data=index)
                 inline_keyboard_title.add(button)
             return inline_keyboard_title
 
@@ -37,5 +38,16 @@ class Command(BaseCommand):
                 bot.send_message(chat_id, 'Cписок продуктов:', reply_markup=inlinekeyboard())
             else:
                 bot.send_message(chat_id, f'Досвидания {message.chat.first_name}')
+
+        def info(index):
+            product = Product.objects.get(id=index)
+            return product.info_for_bot()
+
+        @bot.callback_query_handler(func=lambda c: True)
+        def get_info(c):
+            chat_id = c.message.chat.id
+
+            if c.data:
+                bot.send_message(chat_id, info(c.data))
 
         bot.polling()

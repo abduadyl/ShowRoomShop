@@ -31,7 +31,7 @@ class Product(models.Model):
         return f'{self.title}-{self.created}'
 
     def info_for_bot(self):
-        return f'Название: {self.title}\nОписание:{self.description}\nЦена:{self.price}'
+        return f'Название: {self.title}\nОписание: {self.description}\nЦена: {self.price} сом\nВ наличии: {self.stock}'
 
     class Meta:
         ordering = ('-created', )
