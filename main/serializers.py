@@ -1,10 +1,19 @@
 from rest_framework import serializers
 from .models import *
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+
+class CategoryDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('slug', 'title', )
+
+    def to_representation(self, instance):
+        representation = super(CategoryDetailSerializer, self).to_representation(instance)
+        return representation
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -86,5 +95,10 @@ class LikeSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['user'] = instance.user.email
         return representation
+
+class NewsSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=255)
+    description = serializers.CharField(max_length=500)
+
 
 

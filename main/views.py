@@ -1,12 +1,14 @@
 from rest_framework import generics, viewsets, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
 from .models import Category, Product, Review, Like
-from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer
+from .serializers import CategoryListSerializer, ProductSerializer, ReviewSerializer, CategoryDetailSerializer, NewsSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Q
 from .permissions import IsAuthorPermission, IsDesignerPermission, IsCustomerPermission
+from .utils import main
 
 
 class PaginationProduct(PageNumberPagination):
@@ -45,8 +47,12 @@ class PermissionMixinReview:
 
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = CategoryListSerializer
     permission_classes = [AllowAny, ]
+
+class CategoryDetailView(generics.RetrieveAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoryDetailSerializer
 
 
 class ProductViewSet(PermissionMixinProduct, viewsets.ModelViewSet):
@@ -79,7 +85,12 @@ class ReviewViewSet(PermissionMixinReview, viewsets.ModelViewSet):
     pagination_class = PaginationReview
 
 
+class News(APIView):
+    def get(self, request):
+        info = main()
+        serializer = NewsSerializer(instance=info, many=True)
 
+        return Response(serializer.data)
 
 
 

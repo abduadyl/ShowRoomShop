@@ -1,0 +1,41 @@
+from django.core.management.base import BaseCommand
+from show_room.settings import TOKEN
+import telebot
+from telebot import types
+from main.models import Product
+
+class Command(BaseCommand):
+    help = 'Telegram-bot'
+
+    def handle(self, *args, **options):
+        bot = telebot.TeleBot(TOKEN)
+
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+        k1 = types.KeyboardButton('Открыть список продуктов')
+        k2 = types.KeyboardButton('Закрыть')
+        keyboard.add(k1, k2)
+
+        products = Product.objects.all()
+
+        def inlinekeyboard():
+            inline_keyboard_title = types.InlineKeyboardMarkup()
+            for product in products:
+                button = types.InlineKeyboardButton(product.title, callback_data='test')
+                inline_keyboard_title.add(button)
+            return inline_keyboard_title
+
+        @bot.message_handler(commands=['start'])
+        def start_message(message):
+            chat_id = message.chat.id
+            msg = bot.send_message(chat_id, f'Здравствуйте {message.chat.first_name}',
+                                   reply_markup=keyboard)
+            bot.register_next_step_handler(msg, get_start)
+
+        def get_start(message):
+            chat_id = message.chat.id
+            if message.text == 'Открыть список продуктов':
+                bot.send_message(chat_id, 'Cписок продуктов:', reply_markup=inlinekeyboard())
+            else:
+                bot.send_message(chat_id, f'Досвидания {message.chat.first_name}')
+
+        bot.polling()

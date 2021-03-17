@@ -33,7 +33,7 @@ urlpatterns = [
     path('api/v1/docs/', schema_view.with_ui()),
     path('api/v1/account/', include('account.urls')),
     path('api/v1/profile/', include('myprofile.urls')),
-    path('api/v1/products/', include('main.urls')),
+    path('api/v1/', include('main.urls')),
     path('api/v1/', include(router.urls)),
 ]
 
