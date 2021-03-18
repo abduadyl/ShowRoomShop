@@ -68,6 +68,8 @@ class ProductSerializer(serializers.ModelSerializer):
         representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
         representation['likes'] = LikeSerializer(instance.likes.filter(like=True), many=True).data
         representation['favorites'] = FavoriteSerializer(instance.favorites.filter(favorite=True), many=True).data
+        representation['recommend'] = RecommendSerializer(Product.objects.filter(category__exact=instance.category)[:3],
+                                                          many=True).data
         return representation
 
 
@@ -107,6 +109,12 @@ class FavoriteSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['user'] = instance.user.email
         return representation
+
+class RecommendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('title', 'description', )
+
 
 
 class NewsSerializer(serializers.Serializer):
