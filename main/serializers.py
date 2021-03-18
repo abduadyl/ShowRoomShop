@@ -63,12 +63,18 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super(ProductSerializer, self).to_representation(instance)
+        action = self.context.get('action')
+        reviews = ReviewSerializer(instance.reviews.all(), many=True).data
+        likes = LikeSerializer(instance.likes.filter(like=True), many=True).data
         representation['author'] = instance.author.email
         representation['images'] = ProductImageSerializer(instance.images.all(), many=True, context=self.context).data
-        representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
-        representation['likes'] = LikeSerializer(instance.likes.filter(like=True), many=True).data
-        representation['favorites'] = FavoriteSerializer(instance.favorites.filter(favorite=True), many=True).data
-        representation['recommend'] = RecommendSerializer(Product.objects.filter(category__exact=instance.category)[:3],
+        if action == 'list':
+            representation['reviews'] = len(reviews)
+            representation['likes'] = len(likes)
+        if action == 'retrieve':
+            representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
+            representation['likes'] = LikeSerializer(instance.likes.filter(like=True), many=True).data
+            representation['recommends'] = RecommendSerializer(Product.objects.filter(category__exact=instance.category)[:3],
                                                           many=True).data
         return representation
 
@@ -103,12 +109,8 @@ class LikeSerializer(serializers.ModelSerializer):
 class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
-        fields = ('user', )
+        fields = '__all__'
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['user'] = instance.user.email
-        return representation
 
 class RecommendSerializer(serializers.ModelSerializer):
     class Meta:

@@ -66,8 +66,8 @@ class ProductViewSet(PermissionMixinProduct, viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
-        post = self.get_object()
-        obj, created = Like.objects.get_or_create(user=request.user.profile_customer, post=post)
+        product = self.get_object()
+        obj, created = Like.objects.get_or_create(user=request.user.profile_customer, product=product)
         if not created:
             obj.like = not obj.like
             obj.save()
@@ -76,8 +76,8 @@ class ProductViewSet(PermissionMixinProduct, viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def favorite(self, request, pk=None):
-        post = self.get_object()
-        obj, created = Favorite.objects.get_or_create(user=request.user.profile_customer, post=post)
+        product = self.get_object()
+        obj, created = Favorite.objects.get_or_create(user=request.user.profile_customer, product=product)
         if not created:
             obj.favorite = not obj.favorite
             obj.save()
@@ -112,7 +112,6 @@ class News(APIView):
     def get(self, request):
         info = main()
         serializer = NewsSerializer(instance=info, many=True)
-
         return Response(serializer.data)
 
 
