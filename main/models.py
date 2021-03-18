@@ -57,7 +57,12 @@ class Review(models.Model):
 
 class Like(models.Model):
     user = models.ForeignKey(ProfileCustomer, on_delete=models.CASCADE, related_name='likes')
-    post = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes')
     like = models.BooleanField(default=False)
+
+class Favorite(models.Model):
+    user = models.ForeignKey(ProfileCustomer, on_delete=models.CASCADE, related_name='favorites')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='favorites')
+    favorite = models.BooleanField(default=False)
 
 

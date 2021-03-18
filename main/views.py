@@ -2,8 +2,9 @@ from rest_framework import generics, viewsets, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from .models import Category, Product, Review, Like
-from .serializers import CategoryListSerializer, ProductSerializer, ReviewSerializer, CategoryDetailSerializer, NewsSerializer
+from .models import Category, Product, Review, Like, Favorite
+from .serializers import CategoryListSerializer, ProductSerializer, ReviewSerializer, CategoryDetailSerializer, \
+    NewsSerializer, FavoriteSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Q
@@ -71,7 +72,17 @@ class ProductViewSet(PermissionMixinProduct, viewsets.ModelViewSet):
             obj.like = not obj.like
             obj.save()
         liked_or_unliked = 'liked' if obj.like else 'unliked'
-        return Response('Successfully {} post'.format(liked_or_unliked), status=status.HTTP_200_OK)
+        return Response('Successfully {} product'.format(liked_or_unliked), status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def favorite(self, request, pk=None):
+        post = self.get_object()
+        obj, created = Favorite.objects.get_or_create(user=request.user.profile_customer, post=post)
+        if not created:
+            obj.favorite = not obj.favorite
+            obj.save()
+        added_removed = 'added' if obj.favorite else 'removed'
+        return Response('Successfully {} favorite'.format(added_removed), status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['get'])
     def search(self, request, pk=None):
@@ -86,6 +97,15 @@ class ReviewViewSet(PermissionMixinReview, viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     pagination_class = PaginationReview
+
+class FavoriteListView(generics.ListAPIView):
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteSerializer
+
+    def get_queryset(self):
+        qs = self.request.user.profile_customer
+        queryset = Favorite.objects.filter(user=qs, favorite=True)
+        return queryset
 
 
 class News(APIView):

@@ -66,7 +66,8 @@ class ProductSerializer(serializers.ModelSerializer):
         representation['author'] = instance.author.email
         representation['images'] = ProductImageSerializer(instance.images.all(), many=True, context=self.context).data
         representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
-        representation['likes'] = LikeSerializer(instance.likes.all(), many=True).data
+        representation['likes'] = LikeSerializer(instance.likes.filter(like=True), many=True).data
+        representation['favorites'] = FavoriteSerializer(instance.favorites.filter(favorite=True), many=True).data
         return representation
 
 
@@ -89,12 +90,24 @@ class ReviewSerializer(serializers.ModelSerializer):
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields = '__all__'
+        fields = ('user', )
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['user'] = instance.user.email
         return representation
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = ('user', )
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['user'] = instance.user.email
+        return representation
+
 
 class NewsSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
